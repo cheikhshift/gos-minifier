@@ -50,7 +50,6 @@
 			if err == nil {			
 				return true
 			} else {
-				fmt.Println(err)
 				return false
 			}
 		}
