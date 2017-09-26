@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gos>
+	<!-- xml Schema : https://github.com/cheikhshift/Gopher-Sauce/wiki/XML-tags#xml-schema -->
+	<deploy>package</deploy>
+	<port>8080</port>
+	<package>minify</package>
+	<not_found>/your-404-page</not_found>
+	<error>/your-500-page</error>
+	<import src="github.com/tdewolff/minify" />
+	<import src="github.com/tdewolff/minify/css"/>
+	<import src='htmltwo "github.com/tdewolff/minify/html"'/>
+	<import src="github.com/tdewolff/minify/js"/>
+
+	<output>application.go</output>
+	<domain></domain><!-- Cookie domain -->
+	<main>	//psss go code here
+			m = minify.New()
+			m.AddFunc("text/css", css.Minify)
+			m.AddFunc("text/html", htmltwo.Minify)
+			m.AddFunc("text/javascript", js.Minify)
+	</main>
+
+	<var type="*minify.M">m</var>
+	<key>a very very very very secret key</key>
+	
+	<header> 
+		<!-- remember to Jumpline when stating methods or different struct attributes, it is vital for our parser \n trick -->
+	</header>
+	
+	<endpoints>
+	<end path="" type="f" >
+		
+		if strings.Contains(r.URL.Path, ".js") || strings.Contains(r.URL.Path, ".css") || strings.Contains(r.URL.Path, ".html") {
+			var output string
+			var err error
+			in,_ := Asset("web" + r.URL.Path) 
+			
+			w.Header().Set("Cache-Control", "public")
+			if strings.Contains(r.URL.Path, ".css") {
+				w.Header().Add("Content-Type", "text/css")
+				output, err = m.String("text/css", fmt.Sprintf("%s", in) )
+			} else if strings.Contains(r.URL.Path, ".js") {
+				w.Header().Add("Content-Type", "application/javascript")
+				output, err = m.String("text/javascript", fmt.Sprintf("%s", in) )
+			} else if strings.Contains(r.URL.Path, ".html") {
+				w.Header().Add("Content-Type", "text/html")
+				output, err = m.String("text/html", fmt.Sprintf("%s", in) )
+			}
+			w.Write([]byte(output))
+			if err == nil {			
+				return true
+			} else {
+				fmt.Println(err)
+				return false
+			}
+		}
+
+	</end>
+      <!-- Depending on your build type the usage of this tag will vary. -->
+      <!-- For WebServers it will override any request for a given path and run the specified method. No vars or return types are needed for  -->
+      <!-- methods linked to an API call, please keep in mind that you may use w for http.ResponseWriter and r for http.Request . Additional available function variables is params and session. If a function is api listed it will not be used anywhere else.-->
+      <!-- <end /> is the endpoint tag and has the variables path,method, -->
+      <!-- Happy trails!!! -->
+      <!-- <end path="/index/api"  type="POST" >
+      	varr := "data"
+      	fmt.Println(varr)
+      	//response is the string variable sent -> mResponse()
+      	response = varr
+      </end> -->
+	</endpoints>
+</gos>
