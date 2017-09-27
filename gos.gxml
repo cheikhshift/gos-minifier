@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gos>
-	<!-- xml Schema : https://github.com/cheikhshift/Gopher-Sauce/wiki/XML-tags#xml-schema -->
+	
 	<deploy>package</deploy>
-	<port>8080</port>
+	
 	<package>minify</package>
-	<not_found>/your-404-page</not_found>
-	<error>/your-500-page</error>
+	
 	<import src="github.com/tdewolff/minify" />
 	<import src="github.com/tdewolff/minify/css"/>
 	<import src='htmltwo "github.com/tdewolff/minify/html"'/>
 	<import src="github.com/tdewolff/minify/js"/>
 
-	<output>application.go</output>
-	<domain></domain><!-- Cookie domain -->
 	<main>	//psss go code here
 			m = minify.New()
 			m.AddFunc("text/css", css.Minify)
@@ -21,7 +18,7 @@
 	</main>
 
 	<var type="*minify.M">m</var>
-	<key>a very very very very secret key</key>
+	
 	
 	<header> 
 		<!-- remember to Jumpline when stating methods or different struct attributes, it is vital for our parser \n trick -->
